@@ -1,7 +1,6 @@
 const request = require('supertest');
 const server = require('./server');
 const db = require('../data/dbConfig');
-const input = { username: "Joe", password: "1234" };
 
 beforeAll(async () => {
   await db.migrate.rollback();
@@ -32,18 +31,18 @@ describe('server.js', () => {
       expect(res.status).toBe(400);
     });
     test('responds with created user', async () => {
-      const res = await request(server).post('/api/auth/register').send(input);
-      expect(res.body).toMatchObject({ id: 1, username: "Joe" });
+      const res = await request(server).post('/api/auth/register').send({ username: "Billy", password: "1234" });
+      expect(res.body).toMatchObject({ id: 1, username: "Billy" });
     });
   });
   describe('[POST] /api/auth/login', () => {
     test('responds with the correct message on valid credentials', async () => {
-      await request(server).post('/api/auth/register').send(input);
-      const res = await request(server).post('/api/auth/login').send(input);
-      expect(res.body.message).toMatch('welcome, Joe');
+      await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
+      const res = await request(server).post('/api/auth/login').send({ username: "Joe", password: "1234" });
+      expect(res.body.message).toMatch("welcome, Joe");
     });
     test('responds with the correct status and message on invalid credentials', async () => {
-      await request(server).post('/api/auth/register').send(input);
+      await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
       let res = await request(server).post('/api/auth/login').send({ username: 'notJoe', password: '1234' });
       expect(res.body.message).toMatch("Invalid credentials");
       expect(res.status).toBe(401);
@@ -51,11 +50,5 @@ describe('server.js', () => {
       expect(res.body.message).toMatch("Invalid credentials");
       expect(res.status).toBe(401);
     });
-    test('respons with a token on successfully login', () => {
-
-    });
-  });
-  describe('[GET] /api/jokes', () => {
-
   });
 });

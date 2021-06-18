@@ -34,7 +34,7 @@ function checkUsername(req, res, next) {
                     message: "username taken"
                 });
             } else {
-                const rounds = process.env.BCRYPT_ROUNDS || 8;
+                const rounds = Number(process.env.BCRYPT_ROUNDS) || 8;
                 req.hash = bcrypt.hashSync(password, rounds);
                 next();
             }
