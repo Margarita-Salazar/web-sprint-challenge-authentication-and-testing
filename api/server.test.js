@@ -50,5 +50,6 @@ describe('server.js', () => {
       expect(res.body.message).toMatch("Invalid credentials");
       expect(res.status).toBe(401);
     });
+
   });
 });
