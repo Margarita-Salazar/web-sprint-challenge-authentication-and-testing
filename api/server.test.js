@@ -50,6 +50,30 @@ describe('server.js', () => {
       expect(res.body.message).toMatch("Invalid credentials");
       expect(res.status).toBe(401);
     });
-
+  });
+  describe('[GET] /api/jokes', () => {
+    test('responds with "Token invalid" when putting the wrong token in header', async () => {
+      const res = await request(server).get('/api/jokes').set('Authorization', "notToken");
+      expect(res.body.message).toMatch("Token invalid");
+    });
+    test('responds with jokes data', async () => {
+      await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
+      const token = await request(server).post('/api/auth/login').send({ username: "Joe", password: "1234" });
+      const res = await request(server).get('/api/jokes').set('Authorization', token.body.token);
+      expect(res.body).toMatchObject([
+        {
+          "id": "0189hNRf2g",
+          "joke": "I'm tired of following my dreams. I'm just going to ask them where they are going and meet up with them later."
+        },
+        {
+          "id": "08EQZ8EQukb",
+          "joke": "Did you hear about the guy whose whole left side was cut off? He's all right now."
+        },
+        {
+          "id": "08xHQCdx5Ed",
+          "joke": "Why didn’t the skeleton cross the road? Because he had no guts."
+        },
+      ]);
+    });
   });
 });
