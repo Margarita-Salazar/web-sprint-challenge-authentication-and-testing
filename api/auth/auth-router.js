@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
-router.post('/register', (req, res) => {
+const { checkPayload, checkCredentials } = require('../middleware/auth-middleware');
+
+router.post('/register', checkPayload, (req, res) => {
   res.end('implement register, please!');
   /*
     IMPLEMENT
@@ -29,7 +31,7 @@ router.post('/register', (req, res) => {
   */
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', checkCredentials, (req, res) => {
   res.end('implement login, please!');
   /*
     IMPLEMENT
