@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 
-const { JWT_SECRET } = require("../secrets");
+const JWT_SECRET = process.env.JWT_SECRET || 'shh';
 
 module.exports = function (user) {
     const payload = {
-        subject: user.user_id,
+        subject: user.id,
         username: user.username,
     };
     const options = {
