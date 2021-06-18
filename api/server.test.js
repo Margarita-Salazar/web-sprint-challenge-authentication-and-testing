@@ -30,17 +30,20 @@ describe('server.js', () => {
       res = await request(server).post('/api/auth/register').send({ password: "1234" });
       expect(res.status).toBe(400);
     });
+
     test('responds with created user', async () => {
       const res = await request(server).post('/api/auth/register').send({ username: "Billy", password: "1234" });
       expect(res.body).toMatchObject({ id: 1, username: "Billy" });
     });
   });
+
   describe('[POST] /api/auth/login', () => {
     test('responds with the correct message on valid credentials', async () => {
       await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
       const res = await request(server).post('/api/auth/login').send({ username: "Joe", password: "1234" });
       expect(res.body.message).toMatch("welcome, Joe");
     });
+
     test('responds with the correct status and message on invalid credentials', async () => {
       await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
       let res = await request(server).post('/api/auth/login').send({ username: 'notJoe', password: '1234' });
@@ -51,11 +54,13 @@ describe('server.js', () => {
       expect(res.status).toBe(401);
     });
   });
+
   describe('[GET] /api/jokes', () => {
     test('responds with "Token invalid" when putting the wrong token in header', async () => {
       const res = await request(server).get('/api/jokes').set('Authorization', "notToken");
       expect(res.body.message).toMatch("Token invalid");
     });
+
     test('responds with jokes data', async () => {
       await request(server).post('/api/auth/register').send({ username: "Joe", password: "1234" });
       const token = await request(server).post('/api/auth/login').send({ username: "Joe", password: "1234" });
